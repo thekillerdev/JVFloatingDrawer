@@ -126,6 +126,15 @@ static const CGFloat kJVCenterViewDestinationScale = 0.7;
     CGFloat centerWidth = centerView.bounds.size.width;
     CGFloat centerViewHorizontalOffset = direction * sideWidth;
     CGFloat scaledCenterViewHorizontalOffset = direction * (sideWidth - (centerWidth - kJVCenterViewDestinationScale * centerWidth) / 2.0);
+
+    /* 
+      - Quick fix for IOS < 8 devices 
+      - Seems like in IOS8+ CGAffineTransformMakeTranslation already multiply with the scale.
+    */
+    if ([[UIDevice currentDevice] systemVersion].floatValue < 8) {
+        scaledCenterViewHorizontalOffset *= [UIScreen mainScreen].scale;
+        centerViewHorizontalOffset *= [UIScreen mainScreen].scale;
+    }
     
     CGAffineTransform sideTranslate = CGAffineTransformMakeTranslation(centerViewHorizontalOffset, 0.0);
     sideView.transform = sideTranslate;
